@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Companion to slide_in_right: the outgoing screen slides a bit left. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:interpolator/fast_out_slow_in">
+    <translate
+        android:fromXDelta="0"
+        android:toXDelta="-30%"
+        android:duration="280" />
+    <alpha
+        android:fromAlpha="1"
+        android:toAlpha="0.7"
+        android:duration="280" />
+</set>

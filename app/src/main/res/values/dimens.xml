@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="screen_margin">16dp</dimen>
+    <dimen name="gap_small">8dp</dimen>
+    <dimen name="gap_medium">12dp</dimen>
+    <dimen name="gap_large">16dp</dimen>
+
+    <!-- Top app bar / nav bar -->
+    <dimen name="topbar_height">64dp</dimen>
+    <dimen name="topbar_icon_size">48dp</dimen>
+    <dimen name="navbar_height">80dp</dimen>
+
+    <!-- Cards -->
+    <dimen name="card_corner">20dp</dimen>
+    <dimen name="card_padding">20dp</dimen>
+    <dimen name="card_text_gap">4dp</dimen>
+    <dimen name="card_image_text_gap">12dp</dimen>
+
+    <!-- List items -->
+    <dimen name="listitem_height">72dp</dimen>
+    <dimen name="listitem_icon_circle">40dp</dimen>
+    <dimen name="listitem_icon_size">24dp</dimen>
+
+    <!-- Boxes -->
+    <dimen name="box_corner">28dp</dimen>
+
+    <!-- Dividers -->
+    <dimen name="divider_thickness">1dp</dimen>
+    <dimen name="divider_horizontal_inset">16dp</dimen>
+</resources>

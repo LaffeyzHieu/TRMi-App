@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Top app bar menu for the Controller screen: tune icon button on the
+     right (arrow_back is set as navigationIcon, not a menu item). -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_tune"
+        android:icon="@drawable/ic_tune"
+        android:title="@string/action_tune"
+        app:showAsAction="always" />
+</menu>

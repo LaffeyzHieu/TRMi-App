@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Background for the prompt's "boxes": plain containers with
+    surfaceContainerHigh background and 28dp corners. Used by Controller
+    (and likely reused by later screens that layer text on top of a box).
+
+    Uses the literal @color reference instead of ?attr/... because theme
+    attribute resolution inside <shape> drawables is unreliable across
+    API levels.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/surface_container_high" />
+    <corners android:radius="28dp" />
+</shape>

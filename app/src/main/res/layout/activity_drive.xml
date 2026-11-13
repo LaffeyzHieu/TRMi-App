@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Drive screen (R7 new screen).
+
+    Per the prompt, the screen runs 1052dp tall — longer than the 892dp
+    the device shows — so the body scrolls vertically; the top app bar
+    and bottom nav bar stay fixed while the body scrolls.
+
+    Structure (top to bottom), per the prompt:
+      1. Top app bar "Drive" — arrow_back on left, tune on right.
+      2. Filled card (96dp) — "4 đang bật" headline (text middle, centred).
+      3. Stacked list of 4 items (GPIO đang bật):
+         - "Đèn ngủ"                    / "GPIO 15 | Ấn để sửa"           / pause / chevron
+         - "Quạt trần phòng ngủ"        / "GPIO 16, Speed: 2 | Đang sửa..." / pause / chevron
+         - "Speed quạt trần phòng ngủ" / "GPIO 18, đang bật | Ấn để sửa" / pause / chevron
+         - "Đèn nhà bếp"                / "GPIO 41 | Ấn để sửa"           / pause / chevron
+      4. Inline dialog (per user choice: NOT AlertDialog — embedded as a
+         MaterialCardView in the layout) — "GPIO 16: Bedroom Fanspeed"
+         headline, "Nhập tên mới, chức năng..." body, edit icon, Cancel
+         and OK text buttons. Spec says it partly overlaps the list group
+         and the "22 đang tắt" card, drawn on top.
+         We achieve this with elevation 8dp on the dialog card and a
+         negative marginTop so it visually overlaps the list above. The
+         dialog is dismissable via Cancel; OK shows a Toast (placeholder).
+      5. Divider (16dp horizontal insets).
+      6. Filled card (96dp) — "22 đang tắt" headline (text middle, centred).
+      7. List item: "Ấn để hiện các chức năng" / "22 GPIO" / play_arrow / chevron.
+      8. Divider (16dp horizontal insets).
+      9. Filled card (96dp) — "4 chưa có chức năng" headline (text middle, centred).
+     10. List item: "Ấn ghép các chức năng" / "4 GPIO" / play_arrow / chevron.
+     11. Main nav bar (Drive selected).
+
+    Per user choice for R7: pause/play_arrow icons are substituted with
+    ic_tune (the existing Material Symbols Rounded "tune" icon) to avoid
+    creating new icon files. Replace with real ic_pause / ic_play_arrow
+    when the visual fidelity matters.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- 1. Top app bar (64dp on surface, extends behind status bar via inset). -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_bar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/topbar_height"
+        android:background="?attr/colorSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="@string/topbar_drive"
+        app:titleTextAppearance="@style/TextAppearance.S3.TitleLarge"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/action_back"
+        app:menu="@menu/menu_topbar_drive" />
+
+    <!-- 11. Main nav bar pinned at the bottom. -->
+    <include
+        android:id="@+id/nav_bar_include"
+        layout="@layout/layout_nav_bar_main"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Body. -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toTopOf="@id/nav_bar_include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingTop="@dimen/gap_small"
+            android:paddingBottom="@dimen/gap_large">
+
+            <!-- 2. Filled card "4 đang bật" (96dp, text middle centred). -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest">
+
+                <TextView
+                    android:id="@+id/on_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/drive_on_count_template"
+                    android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. GPIO đang bật: DriveActivity đổ từng row (item_drive_gpio) vào on_list. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/on_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:id="@+id/on_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Inline dialog (R7 user choice: NOT AlertDialog).
+                 MaterialCardView mimicking a dialog: 312dp wide (where
+                 possible), 28dp corners, surfaceContainerHigh background,
+                 high elevation so it draws on top of the list above and
+                 the card below.
+
+                 Spec says it partly overlaps the list group AND the
+                 "22 đang tắt" card. We achieve overlap with the list via
+                 marginTop=-80dp (dialog pulled up over the list). The
+                 overlap with the card below is approximated by the card
+                 also using a small marginTop negative — but the dialog's
+                 high elevation (8dp) keeps it visually on top of both. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/inline_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:visibility="gone"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                app:cardElevation="8dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Headline + edit icon row. -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/dialog_headline"
+                            android:text="@string/drive_dialog_headline"
+                            android:textAppearance="@style/TextAppearance.S3.HeadlineSmall"
+                            android:textColor="?attr/colorOnSurface"
+                            android:lineSpacingMultiplier="1.3" />
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_edit_note"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <!-- Body text. -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gap_small"
+                        android:text="@string/drive_dialog_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4" />
+
+                    <!-- Text input field (placeholder for editing GPIO name/function). -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gap_medium"
+                        android:hint="@string/drive_dialog_body">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/dialog_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Cancel / OK text buttons, aligned right. -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/gap_medium"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/dialog_cancel"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/drive_dialog_cancel" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/dialog_ok"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:text="@string/drive_dialog_ok" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. Divider (16dp horizontal insets). -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:layout_marginStart="@dimen/divider_horizontal_inset"
+                android:layout_marginEnd="@dimen/divider_horizontal_inset"
+                app:dividerColor="?attr/colorOutlineVariant" />
+
+            <!-- 6. Filled card "22 đang tắt" (96dp, text middle centred). -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest">
+
+                <TextView
+                    android:id="@+id/off_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/drive_off_count_template"
+                    android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 7. "Ấn để hiện các chức năng" list item. -->
+            <LinearLayout
+                android:id="@+id/item_show_functions"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/listitem_height"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/colorSurfaceContainerLow"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:paddingHorizontal="@dimen/gap_medium">
+
+                <FrameLayout
+                    android:layout_width="@dimen/listitem_icon_circle"
+                    android:layout_height="@dimen/listitem_icon_circle">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_icon_circle_primary" />
+
+                    <ImageView
+                        android:layout_width="@dimen/listitem_icon_size"
+                        android:layout_height="@dimen/listitem_icon_size"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_tune" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/card_image_text_gap"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/drive_show_functions_title"
+                        android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3" />
+
+                    <TextView
+                        android:id="@+id/show_functions_support"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/drive_show_functions_support_template"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="@dimen/listitem_icon_size"
+                    android:layout_height="@dimen/listitem_icon_size"
+                    android:layout_marginStart="@dimen/gap_small"
+                    android:src="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/cd_chevron" />
+            </LinearLayout>
+
+            <!-- 7b. List GPIO đang tắt: ấn "Ấn để hiện các chức năng" để mở/đóng. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/off_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:visibility="gone"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:id="@+id/off_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 8. Divider (16dp horizontal insets). -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:layout_marginStart="@dimen/divider_horizontal_inset"
+                android:layout_marginEnd="@dimen/divider_horizontal_inset"
+                app:dividerColor="?attr/colorOutlineVariant" />
+
+            <!-- 9. Filled card "4 chưa có chức năng" (96dp, text middle centred). -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest">
+
+                <TextView
+                    android:id="@+id/unassigned_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/drive_unassigned_count_template"
+                    android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 10. "Ấn ghép các chức năng" list item. -->
+            <LinearLayout
+                android:id="@+id/item_assign_functions"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/listitem_height"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/colorSurfaceContainerLow"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:paddingHorizontal="@dimen/gap_medium">
+
+                <FrameLayout
+                    android:layout_width="@dimen/listitem_icon_circle"
+                    android:layout_height="@dimen/listitem_icon_circle">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_icon_circle_primary" />
+
+                    <ImageView
+                        android:layout_width="@dimen/listitem_icon_size"
+                        android:layout_height="@dimen/listitem_icon_size"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_tune" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/card_image_text_gap"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/drive_assign_functions_title"
+                        android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3" />
+
+                    <TextView
+                        android:id="@+id/assign_functions_support"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/drive_assign_functions_support_template"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="@dimen/listitem_icon_size"
+                    android:layout_height="@dimen/listitem_icon_size"
+                    android:layout_marginStart="@dimen/gap_small"
+                    android:src="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/cd_chevron" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

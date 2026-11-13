@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        M3 Purple DARK color scheme. Chỉ cần đảo các token mà themes.xml
+        tham chiếu (@color/...). Token nào không khai ở đây (vd scrim_*)
+        sẽ fallback về res/values/colors.xml. Đặt file này tại:
+            res/values-night/colors.xml
+        Android tự dùng khi ở night mode (MODE_NIGHT_YES / theo hệ thống).
+    -->
+    <color name="primary">#D0BCFF</color>
+    <color name="on_primary">#381E72</color>
+    <color name="primary_container">#4F378B</color>
+    <color name="on_primary_container">#EADDFF</color>
+
+    <color name="secondary">#CCC2DC</color>
+    <color name="on_secondary">#332D41</color>
+    <color name="secondary_container">#4A4458</color>
+    <color name="on_secondary_container">#E8DEF8</color>
+
+    <color name="tertiary">#EFB8C8</color>
+    <color name="on_tertiary">#492532</color>
+    <color name="tertiary_container">#633B48</color>
+    <color name="on_tertiary_container">#FFD8E4</color>
+
+    <color name="error">#F2B8B5</color>
+    <color name="on_error">#601410</color>
+    <color name="error_container">#8C1D18</color>
+    <color name="on_error_container">#F9DEDC</color>
+
+    <!-- Soft dark: xám đậm thay vì đen tuyền. Muốn tối/sáng hơn thì
+         chỉnh đồng loạt bộ surface_* + background + surface bên dưới.
+         Số càng lớn (vd 2x→3x) càng sáng. -->
+    <color name="background">#201E24</color>
+    <color name="on_background">#E6E0E9</color>
+
+    <color name="surface">#201E24</color>
+    <color name="on_surface">#E6E0E9</color>
+    <color name="surface_variant">#49454F</color>
+    <color name="on_surface_variant">#CAC4D0</color>
+
+    <color name="surface_container_lowest">#1A181E</color>
+    <color name="surface_container_low">#252329</color>
+    <color name="surface_container">#29272E</color>
+    <color name="surface_container_high">#343138</color>
+    <color name="surface_container_highest">#3F3C44</color>
+
+    <color name="outline">#938F99</color>
+    <color name="outline_variant">#49454F</color>
+
+    <color name="inverse_surface">#E6E0E9</color>
+    <color name="inverse_on_surface">#322F35</color>
+    <color name="inverse_primary">#6750A4</color>
+</resources>

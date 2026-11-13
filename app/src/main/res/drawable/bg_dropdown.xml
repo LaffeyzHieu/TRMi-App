@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for the expandable dropdown below the stacked list.
+     surfaceContainer (slightly darker than the list's surfaceContainerLow)
+     so the dropdown visually separates from the list above it. 20dp
+     corners match the M3 Expressive card default. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/surface_container" />
+    <corners android:radius="20dp" />
+</shape>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".S3App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.S3Monitor"
+        android:usesCleartextTraffic="true">
+
+        <!-- Home is the launcher. Each screen is its own Activity so the
+             slide-in-from-right transitions specified in the prompt work
+             with Activity transitions. -->
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- R2: Controller screen. -->
+        <activity
+            android:name=".ui.controller.ControllerActivity"
+            android:exported="false"
+            android:label="@string/topbar_controller" />
+
+        <!-- R3: History screen. -->
+        <activity
+            android:name=".ui.history.HistoryActivity"
+            android:exported="false"
+            android:label="@string/topbar_history" />
+
+        <!-- R4: Settings screen. -->
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false"
+            android:label="@string/topbar_settings" />
+
+        <!-- R5: Story screen. -->
+        <activity
+            android:name=".ui.story.StoryActivity"
+            android:exported="false"
+            android:label="@string/topbar_story" />
+
+        <!-- R6: Resources screen (final round). -->
+        <activity
+            android:name=".ui.resources.ResourcesActivity"
+            android:exported="false"
+            android:label="@string/topbar_resources" />
+
+        <!-- R7: Drive screen (added in spec update). -->
+        <activity
+            android:name=".ui.drive.DriveActivity"
+            android:exported="false"
+            android:label="@string/topbar_drive" />
+
+    </application>
+</manifest>

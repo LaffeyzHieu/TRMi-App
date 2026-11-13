@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+        M3 Expressive light theme on top of the Material Components for
+        Android library (View system, NOT Compose). The parent already
+        defines all M3 color roles with the baseline purple values; we
+        re-declare them so the values are pinned to the prompt's spec.
+    -->
+    <!-- DayNight: dialog/snackbar đổi theo mode, không bị dialog trắng chữ trắng khi Tối. -->
+    <style name="Theme.S3Monitor" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorPrimaryInverse">@color/inverse_primary</item>
+
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+
+        <!-- Tertiary -->
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorOnTertiary">@color/on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+        <item name="colorOnErrorContainer">@color/on_error_container</item>
+
+        <!-- Surface family -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+
+        <item name="colorSurfaceContainerLowest">@color/surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_container_highest</item>
+
+        <!-- Outline -->
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outline_variant</item>
+
+        <!-- Inverse (material 1.12.0 attribute names) -->
+        <item name="colorSurfaceInverse">@color/inverse_surface</item>
+        <item name="colorOnSurfaceInverse">@color/inverse_on_surface</item>
+
+        <!-- Status / navigation bars: light icons would clash with the
+             light theme, so we let the system theme the bars natively. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
+        <!-- Chặn OS (ColorOS/Android) tự ép tối app: mode do switch trong Settings quyết định. -->
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
+        <!-- Component defaults: M3 Expressive shapes -->
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.S3.Small</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.S3.Medium</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.S3.Large</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.S3.ExtraLarge</item>
+    </style>
+
+    <style name="ShapeAppearance.S3.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">8dp</item>
+    </style>
+    <style name="ShapeAppearance.S3.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">20dp</item>
+    </style>
+    <style name="ShapeAppearance.S3.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">28dp</item>
+    </style>
+    <!-- material 1.12.0 has no ExtraLargeComponent; LargeComponent is the
+         closest shape style (both are fully-rounded corners we override). -->
+    <style name="ShapeAppearance.S3.ExtraLarge" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <!-- Pill button overrides (M3 Expressive uses fully-rounded buttons). -->
+    <style name="Widget.S3.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.S3.Pill</item>
+    </style>
+    <style name="ShapeAppearance.S3.Pill" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Card styles: filled / outlined / elevated, all 20dp corners. -->
+    <style name="Widget.S3.CardView.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="contentPadding">20dp</item>
+    </style>
+    <style name="Widget.S3.CardView.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="contentPadding">20dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/outline_variant</item>
+    </style>
+    <style name="Widget.S3.CardView.Elevated" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="contentPadding">20dp</item>
+        <item name="cardElevation">1dp</item>
+    </style>
+
+    <!-- Text appearances. Material Components already provides
+         TextAppearance.Material3.* — we just alias for readability. -->
+    <style name="TextAppearance.S3.TitleLarge" parent="TextAppearance.Material3.TitleLarge" />
+    <style name="TextAppearance.S3.TitleMedium" parent="TextAppearance.Material3.TitleMedium" />
+    <style name="TextAppearance.S3.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall" />
+    <style name="TextAppearance.S3.BodyLarge" parent="TextAppearance.Material3.BodyLarge" />
+    <style name="TextAppearance.S3.BodyMedium" parent="TextAppearance.Material3.BodyMedium" />
+    <style name="TextAppearance.S3.LabelMedium" parent="TextAppearance.Material3.LabelMedium" />
+</resources>

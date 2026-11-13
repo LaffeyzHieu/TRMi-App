@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- 1. Top app bar (64dp on surface, extends behind status bar via inset). -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_bar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/topbar_height"
+        android:background="?attr/colorSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="@string/topbar_resources"
+        app:titleTextAppearance="@style/TextAppearance.S3.TitleLarge"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/action_back" />
+
+    <!-- 7. Secondary nav bar pinned at the bottom (stays fixed while body scrolls). -->
+    <include
+        android:id="@+id/nav_bar_include"
+        layout="@layout/layout_nav_bar_secondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Body: scrollable because the screen is 932dp tall, longer than
+         the 892dp device shows. -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toTopOf="@id/nav_bar_include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingTop="@dimen/gap_small"
+            android:paddingBottom="@dimen/gap_large">
+
+            <!-- 2. Filled card (125dp) — LinkedIn image as full-bleed
+                 background behind a dark scrim. The icon image placeholder
+                 is used here until Coil/Glide is added (see Activity comment). -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/codes_card"
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
+                app:contentPadding="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/codes_image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/cd_image_placeholder"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_image"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        android:alpha="0.35"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/scrim_dark"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/codes_headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="@string/resources_codes_headline"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/codes_body"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/codes_body"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/resources_codes_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.4"
+                        app:layout_constraintTop_toBottomOf="@id/codes_headline"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Stacked list of 3 items: Code App / Code ESP / Code web "Timeline". -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Item 1: Code App. -->
+                    <LinearLayout
+                        android:id="@+id/item_code_app"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_edit_note" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resources_code_app_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/resources_code_app_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 2: Code ESP. -->
+                    <LinearLayout
+                        android:id="@+id/item_code_esp"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_dashboard" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resources_code_esp_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/resources_code_esp_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 3: Code web "Timeline". -->
+                    <LinearLayout
+                        android:id="@+id/item_code_web"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_fact_check" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resources_code_web_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/resources_code_web_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Divider with 16dp horizontal insets. -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:layout_marginStart="@dimen/divider_horizontal_inset"
+                android:layout_marginEnd="@dimen/divider_horizontal_inset"
+                app:dividerColor="?attr/colorOutlineVariant" />
+
+            <!-- 5. Outlined card (164dp) — image 125dp wide trailing,
+                 "Another resources?" + "Ping me 🐢" (text middle, centred). -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="164dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:contentPadding="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/another_image"
+                        android:layout_width="125dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/cd_image_placeholder"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        android:padding="36dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/another_headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/card_padding"
+                        android:layout_marginEnd="@dimen/card_image_text_gap"
+                        android:text="@string/resources_another_headline"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/another_body"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/another_image"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/another_body"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/card_padding"
+                        android:layout_marginEnd="@dimen/card_image_text_gap"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/resources_another_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.4"
+                        app:layout_constraintTop_toBottomOf="@id/another_headline"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/another_image" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 6. Stacked list of 2 items: Email / Or Zalo. -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Item 1: Email. -->
+                    <LinearLayout
+                        android:id="@+id/item_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_send" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resources_email_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/resources_email_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 2: Or Zalo. -->
+                    <LinearLayout
+                        android:id="@+id/item_zalo"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_campaign" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resources_zalo_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/resources_zalo_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

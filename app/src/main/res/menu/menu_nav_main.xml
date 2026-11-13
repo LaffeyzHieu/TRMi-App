@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Main nav bar — 4 destinations (R7: added Drive).
+     Per the prompt: "Home (home), Controller (monitoring), History (update),
+     Drive (wifi)". -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/nav_home" />
+    <item
+        android:id="@+id/nav_controller"
+        android:icon="@drawable/ic_monitoring"
+        android:title="@string/nav_controller" />
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/ic_update"
+        android:title="@string/nav_history" />
+    <item
+        android:id="@+id/nav_drive"
+        android:icon="@drawable/ic_wifi"
+        android:title="@string/nav_drive" />
+</menu>

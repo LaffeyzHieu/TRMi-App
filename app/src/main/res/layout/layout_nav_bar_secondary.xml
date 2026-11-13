@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Shared secondary bottom nav bar (Settings | Story | Resources).
+    Same component family as the main bar; swapped menu only.
+-->
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_bar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navbar_height"
+    android:background="?attr/colorSurfaceContainer"
+    app:menu="@menu/menu_nav_secondary"
+    app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
+    app:labelVisibilityMode="labeled"
+    app:itemRippleColor="?attr/colorOnSurfaceVariant"
+    tools:ignore="MissingDefaultResource"
+    xmlns:tools="http://schemas.android.com/tools" />

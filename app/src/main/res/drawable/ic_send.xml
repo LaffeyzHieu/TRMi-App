@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material Symbols Rounded: send (paper plane) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960"
+    android:tint="?attr/colorOnSurfaceVariant">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M120,800L120,160Q120,135 142.5,124Q165,113 187,124L798,460Q823,472 823,496Q823,520 798,532L187,868Q165,879 142.5,868Q120,857 120,832L120,800ZM200,720L680,496L200,272L200,432L440,496L200,560L200,720Z" />
+</vector>

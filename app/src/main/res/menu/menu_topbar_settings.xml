@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Top app bar menu for the Settings screen: open_in_new icon button on
+     the right (opens https://jvmelaffeyz.web.app/ in a browser tab).
+     arrow_back is set as navigationIcon, not a menu item. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_open_external"
+        android:icon="@drawable/ic_open_in_new"
+        android:title="@string/settings_open_external"
+        app:showAsAction="always" />
+</menu>

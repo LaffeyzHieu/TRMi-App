@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for the Threshold section header (R7 spec: "on a
+     secondaryContainer background"). 28dp corners match the M3
+     Expressive list treatment so the header visually groups with
+     the slider rows below it. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/secondary_container" />
+    <corners android:radius="28dp" />
+</shape>

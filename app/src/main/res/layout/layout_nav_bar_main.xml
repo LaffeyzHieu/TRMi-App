@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Shared main bottom nav bar (Home | Controller | History).
+    Each screen includes this layout at the bottom and selects its own
+    destination via setupMainNav() in BaseScreenActivity.
+
+    The bar uses Widget.Material3.NavigationBarView defaults:
+    80dp tall, surfaceContainer background, secondaryContainer pill
+    indicator (64x32dp), filled icon, labelMedium label.
+-->
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_bar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navbar_height"
+    android:background="?attr/colorSurfaceContainer"
+    app:menu="@menu/menu_nav_main"
+    app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
+    app:labelVisibilityMode="labeled"
+    app:itemRippleColor="?attr/colorOnSurfaceVariant"
+    tools:ignore="MissingDefaultResource"
+    xmlns:tools="http://schemas.android.com/tools" />

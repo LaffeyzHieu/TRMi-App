@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark scrim for full-bleed image cards. Trong suốt (40% → 80% đen) để vẫn
+     thấy ảnh phía sau; đen đặc #000000 sẽ biến card thành cục đen. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:startColor="#66000000"
+        android:endColor="#CC000000"
+        android:type="linear" />
+</shape>

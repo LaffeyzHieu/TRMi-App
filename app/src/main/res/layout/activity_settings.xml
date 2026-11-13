@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Settings screen (R7 updated).
+
+    Structure (top to bottom), per the R7 spec:
+      1. Top app bar "Settings" — arrow_back on left, open_in_new on right.
+      2. Filled card (96dp) — "Normal settings" headline (text middle).
+         (R7 replaces the old 380×60dp box "App base" with this card.)
+      3. Stacked list of 3 items (M3 Expressive list treatment):
+         - "Poll Rate"  / "10s | 10s, 30s, 1m, 5m, 10m" / av_timer / chevron
+         - "Giao diện" / "Sáng / Tối"                   / routine   / chevron
+         - "Xóa log"    / "Nhấn để xóa log 7 ngày"       / delete    / (no chevron)
+      4. Divider (16dp horizontal insets).
+      5. "Threshold" header — leading warning icon (on a surface circle),
+         on a secondaryContainer background.
+      6. 6 horizontal slider rows (R7 layout):
+         - CO2: 1501ppm       | single Slider (ComposeView)
+         - Temp: 15 | 36      | range RangeSlider (ComposeView)
+         - RH: 30 | 80        | range RangeSlider (ComposeView)
+         - PM1: 50            | single Slider (ComposeView)  [kept per user]
+         - PM2.5: 91          | single Slider (ComposeView)
+         - PM10: 91           | single Slider (ComposeView)
+         Each row: text on the LEFT (wrap_content), slider on the RIGHT
+         (0dp + weight=1 — fills the remaining width). NEVER stack or wrap.
+      7. Secondary bottom nav bar (Settings selected).
+
+    The screen runs 948dp (per R7 spec), longer than 892dp device shows,
+    so the body scrolls vertically; bars stay fixed.
+
+    Sliders use ComposeView (Jetpack Compose material3 Slider) instead of
+    com.google.android.material.slider.Slider because the spec calls for
+    the M3 Expressive thick-track + tall-handle styling, which the
+    View-system Material Components library doesn't ship. See the build
+    config note in app/build.gradle.kts for the Hybrid approach rationale.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- 1. Top app bar (64dp on surface, extends behind status bar via inset). -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_bar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/topbar_height"
+        android:background="?attr/colorSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="@string/topbar_settings"
+        app:titleTextAppearance="@style/TextAppearance.S3.TitleLarge"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/action_back"
+        app:menu="@menu/menu_topbar_settings" />
+
+    <!-- 7. Secondary nav bar pinned at the bottom. -->
+    <include
+        android:id="@+id/nav_bar_include"
+        layout="@layout/layout_nav_bar_secondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Body. -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toTopOf="@id/nav_bar_include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingTop="@dimen/gap_small"
+            android:paddingBottom="@dimen/gap_large">
+
+            <!-- 2. Filled card (96dp) — "Normal settings" (replaces box "App base"). -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/settings_normal_card"
+                    android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Stacked list of 3 items. -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Item 1: Poll Rate. -->
+                    <LinearLayout
+                        android:id="@+id/item_poll_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_av_timer" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_poll_rate"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:id="@+id/poll_rate_support"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/settings_poll_rate_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 2: Giao diện. -->
+                    <LinearLayout
+                        android:id="@+id/item_ui_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_routine" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_ui_mode"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:id="@+id/ui_mode_support"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/settings_ui_mode_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 3: Xóa log (no trailing chevron per spec). -->
+                    <LinearLayout
+                        android:id="@+id/item_clear_log"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_error" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_delete" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_clear_log"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/settings_clear_log_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <!-- No trailing chevron on item 3 per spec. -->
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Divider with 16dp horizontal insets. -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:layout_marginStart="@dimen/divider_horizontal_inset"
+                android:layout_marginEnd="@dimen/divider_horizontal_inset"
+                app:dividerColor="?attr/colorOutlineVariant" />
+
+            <!-- 5. "Threshold" header — leading warning icon (on a surface
+                 circle) on a secondaryContainer background. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_threshold_header"
+                android:paddingHorizontal="@dimen/gap_medium">
+
+                <FrameLayout
+                    android:layout_width="@dimen/listitem_icon_circle"
+                    android:layout_height="@dimen/listitem_icon_circle">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_icon_circle_surface" />
+
+                    <ImageView
+                        android:layout_width="@dimen/listitem_icon_size"
+                        android:layout_height="@dimen/listitem_icon_size"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_warning" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/card_image_text_gap"
+                    android:text="@string/settings_threshold"
+                    android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                    android:textColor="?attr/colorOnSecondaryContainer"
+                    android:lineSpacingMultiplier="1.3" />
+            </LinearLayout>
+
+            <!-- 6. Threshold slider rows (R7 horizontal layout).
+                 Each row is ONE LINE: text on the LEFT (wrap_content),
+                 slider on the RIGHT (0dp + weight=1, fills remaining width).
+                 Never stack vertically or wrap. -->
+
+            <!-- CO2 row. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/gap_small"
+                android:minHeight="56dp">
+
+                <TextView
+                    android:id="@+id/co2_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_co2_initial"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/co2_slider_compose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/gap_medium" />
+            </LinearLayout>
+
+            <!-- Temp row (range slider). -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/gap_small"
+                android:minHeight="56dp">
+
+                <TextView
+                    android:id="@+id/temp_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_temp_initial"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/temp_slider_compose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/gap_medium" />
+            </LinearLayout>
+
+            <!-- RH row (range slider). -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/gap_small"
+                android:minHeight="56dp">
+
+                <TextView
+                    android:id="@+id/rh_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_rh_initial"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/rh_slider_compose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/gap_medium" />
+            </LinearLayout>
+
+            <!-- PM1 row (kept per user override). -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/gap_small"
+                android:minHeight="56dp">
+
+                <TextView
+                    android:id="@+id/pm1_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_pm1_initial"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/pm1_slider_compose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/gap_medium" />
+            </LinearLayout>
+
+            <!-- PM2.5 row. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/gap_small"
+                android:minHeight="56dp">
+
+                <TextView
+                    android:id="@+id/pm25_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_pm25_initial"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/pm25_slider_compose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/gap_medium" />
+            </LinearLayout>
+
+            <!-- PM10 row. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/gap_small"
+                android:minHeight="56dp">
+
+                <TextView
+                    android:id="@+id/pm10_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_pm10_initial"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/pm10_slider_compose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/gap_medium" />
+            </LinearLayout>
+            <!-- Nút Lưu & gửi threshold xuống ESP -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_threshold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:text="@string/settings_save_push"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

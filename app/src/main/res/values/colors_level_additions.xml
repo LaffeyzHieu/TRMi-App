@@ -1,0 +1,7 @@
+<resources>
+    <color name="level_great">#2E7D32</color>
+    <color name="level_good">#558B2F</color>
+    <color name="level_ok">#F9A825</color>
+    <color name="level_warn">#E65100</color>
+    <color name="level_crit">#B71C1C</color>
+</resources>

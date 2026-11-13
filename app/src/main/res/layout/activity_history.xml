@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    History screen.
+
+    Structure (top to bottom), per the prompt:
+      1. Top app bar "History" — arrow_back on left, tune on right.
+      2. Outlined card (96dp) — timestamp + "Disconnected, Last connect:".
+      3. Outlined card (156dp) — image trailing, "Không khí hơi ngột ngạt" /
+         "CO2 >1500ppm, phòng bí quá 🐢" (text middle).
+      4. Filled card (128dp) — image LEADING, "3m ago" /
+         "Độ ẩm thấp hơn 35%" (text middle).
+      5. Stacked list of 3 items (M3 Expressive list treatment):
+         - "Cảnh báo nhiều nhất" / "Bụi PM 1, $countPM1 lần" / leading eco
+         - "#2" / "Độ ẩm: $countHud lần" / leading eco + trailing chevron
+         - "Nhấp để xem tất cả cảnh báo" / "Trong 7 ngày qua" / trailing chevron
+      6. (R3 supplement) Expandable dropdown below item 3 — replaces the
+         separate 7-day screen with an inline expandable section. Empty
+         state shown until Room data ships in a later round.
+      7. Main bottom nav bar (History selected).
+
+    The body is in a NestedScrollView so it survives small screens / font
+    scale, and so the expandable dropdown can grow without breaking layout.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- 1. Top app bar (64dp on surface, extends behind status bar via inset). -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_bar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/topbar_height"
+        android:background="?attr/colorSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="@string/topbar_history"
+        app:titleTextAppearance="@style/TextAppearance.S3.TitleLarge"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/action_back"
+        app:menu="@menu/menu_topbar_history" />
+
+    <!-- 7. Main nav bar pinned at the bottom. -->
+    <include
+        android:id="@+id/nav_bar_include"
+        layout="@layout/layout_nav_bar_main"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Body. -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toTopOf="@id/nav_bar_include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingTop="@dimen/gap_small"
+            android:paddingBottom="@dimen/gap_large">
+
+            <!-- 2. Outlined status card (96dp). -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                app:cardBackgroundColor="?attr/colorSurface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/hist_status_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/timestamp_placeholder"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3" />
+
+                    <TextView
+                        android:id="@+id/hist_status_body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/state_disconnected_template"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Outlined alert card (156dp) — image icon fills trailing side. -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurface">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/alert_headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_alert_headline"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/alert_body"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/alert_image"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/alert_body"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/home_alert_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4"
+                        app:layout_constraintTop_toBottomOf="@id/alert_headline"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/alert_image" />
+
+                    <ImageView
+                        android:id="@+id/alert_image"
+                        android:layout_width="120dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/cd_image_placeholder"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        android:padding="36dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Filled card (128dp) — image LEADING, text middle. -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="128dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
+                app:contentPadding="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/recent_alert_image"
+                        android:layout_width="120dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/cd_image_placeholder"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        android:padding="36dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/recent_alert_headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/card_image_text_gap"
+                        android:layout_marginEnd="@dimen/card_padding"
+                        android:text="@string/history_recent_headline"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/recent_alert_body"
+                        app:layout_constraintStart_toEndOf="@id/recent_alert_image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/recent_alert_body"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/card_image_text_gap"
+                        android:layout_marginEnd="@dimen/card_padding"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/history_recent_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4"
+                        app:layout_constraintTop_toBottomOf="@id/recent_alert_headline"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/recent_alert_image"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. Stacked list (M3 Expressive list treatment): 28dp outer
+                 corners, surfaceContainerLow background, 72dp items, thin
+                 dividers between items. -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardCornerRadius="28dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:contentPadding="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Item 1: "Cảnh báo nhiều nhất" / "Bụi PM 1, $countPM1 lần" / leading eco. -->
+                    <LinearLayout
+                        android:id="@+id/item_top_warning"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_eco" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/top_warning_headline"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/history_top_warning_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:id="@+id/top_warning_support"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/history_top_warning_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <!-- No trailing chevron on item 1 per spec. -->
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 2: "#2" / "Độ ẩm: $countHud lần" / leading eco + trailing chevron. -->
+                    <LinearLayout
+                        android:id="@+id/item_second_warning"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/listitem_icon_circle"
+                            android:layout_height="@dimen/listitem_icon_circle">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_icon_circle_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/listitem_icon_size"
+                                android:layout_height="@dimen/listitem_icon_size"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_eco" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/card_image_text_gap"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/second_warning_headline"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/history_second_warning_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:id="@+id/second_warning_support"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/history_second_warning_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/gap_medium"
+                        android:layout_marginEnd="@dimen/gap_medium"
+                        app:dividerColor="?attr/colorOutlineVariant" />
+
+                    <!-- Item 3: "Nhấp để xem tất cả cảnh báo" / "Trong 7 ngày qua" /
+                         trailing chevron (rotates 90° when expanded). Tapping
+                         toggles the inline dropdown below instead of opening
+                         a separate 7-day screen (per the R3 supplement). -->
+                    <LinearLayout
+                        android:id="@+id/item_show_all"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/listitem_height"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingHorizontal="@dimen/gap_medium">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/history_show_all_title"
+                                android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:lineSpacingMultiplier="1.3" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/history_show_all_support"
+                                android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:lineSpacingMultiplier="1.4" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/expand_chevron"
+                            android:layout_width="@dimen/listitem_icon_size"
+                            android:layout_height="@dimen/listitem_icon_size"
+                            android:layout_marginStart="@dimen/gap_small"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="@string/cd_chevron" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 6. Expandable dropdown (initially gone). Shows all alerts
+                 within the last 7 days. Empty state until Room data layer
+                 ships in a later round. -->
+            <LinearLayout
+                android:id="@+id/expandable_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/gap_small"
+                android:background="@drawable/bg_dropdown"
+                android:padding="@dimen/gap_large">
+
+                <TextView
+                    android:id="@+id/dropdown_empty_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/history_dropdown_empty"
+                    android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.4" />
+
+                <!-- Future: RecyclerView of alert entries from Room will
+                     slot in here. Each entry shows timestamp + alert type
+                     + severity. -->
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

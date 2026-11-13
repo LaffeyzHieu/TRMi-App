@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Reverse entry transition: the back stack screen slides back in from
+    the left. Used by onBackPressed() so "Back plays the entry transition
+    in reverse".
+-->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:interpolator/fast_out_slow_in">
+    <translate
+        android:fromXDelta="-30%"
+        android:toXDelta="0"
+        android:duration="280" />
+    <alpha
+        android:fromAlpha="0.7"
+        android:toAlpha="1"
+        android:duration="280" />
+</set>

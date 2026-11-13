@@ -1,0 +1,24 @@
+<resources>
+    <string name="home_esp_connecting">Đang kết nối…</string>
+    <string name="home_esp_connected">Đã kết nối</string>
+
+    <!-- Home screen: stat value formats -->
+    <string name="home_temp_fmt">%.1f°C</string>
+    <string name="home_humi_fmt">%.1f%%</string>
+    <string name="home_co2_fmt">%dppm</string>
+    <string name="home_pm25_fmt">%d μg/m³</string>
+
+    <!-- TRMi Score messages (1=tốt nhất, 5=tệ nhất) -->
+    <string name="trmi_msg_1">Không khí trong lành! 🌿</string>
+    <string name="trmi_msg_2">Chất lượng tốt 👌</string>
+    <string name="trmi_msg_3">Ổn, có thể tốt hơn 🙂</string>
+    <string name="trmi_msg_4">Chú ý không khí! ⚠️</string>
+    <string name="trmi_msg_5">Nguy hiểm, cần thông gió! 🚨</string>
+
+    <!-- Level labels -->
+    <string name="level_great">Tốt</string>
+    <string name="level_good">Khá</string>
+    <string name="level_ok">Bình thường</string>
+    <string name="level_warn">Chú ý</string>
+    <string name="level_crit">Nguy hiểm</string>
+</resources>

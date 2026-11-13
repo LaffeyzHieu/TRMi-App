@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- No-op animation, used to keep the underlying screen still while a
+     new one slides in (when we don't want a paired slide-out). -->
+<translate
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromXDelta="0"
+    android:toXDelta="0"
+    android:duration="280" />

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">S3 Monitor</string>
+
+    <!-- Top app bar titles -->
+    <string name="topbar_home">S3 - Home</string>
+    <string name="topbar_controller">Controller</string>
+    <string name="topbar_history">History</string>
+    <string name="topbar_settings">Settings</string>
+    <string name="topbar_story">Story</string>
+    <string name="topbar_resources">Resources</string>
+    <string name="topbar_drive">Drive</string>
+
+    <!-- Common -->
+    <string name="action_tune">Tune</string>
+    <string name="action_back">Back</string>
+    <string name="state_disconnected_template">Disconnected, Last connect:</string>
+    <string name="timestamp_placeholder">21:19 31/10/2026</string>
+
+    <!-- Home -->
+    <string name="home_alert_headline">Không khí hơi ngột ngạt</string>
+    <string name="home_alert_body">CO2 &gt; 1500ppm, phòng bí quá 🐢</string>
+    <string name="home_aqi_headline">AQI Trung bình</string>
+    <string name="home_aqi_body">Dựa vào AQI rate để vẽ ra vài surprise message</string>
+    <string name="home_recent_alert_title">Cảnh báo gần đây</string>
+    <string name="home_recent_alert_support">Độ ẩm (&lt; 35%), ấn để xem chi tiết</string>
+
+    <!-- Controller -->
+    <string name="controller_temp_chart">Temp Chart + phân tích</string>
+    <string name="controller_rh_chart">RH Chart + phân tích</string>
+    <string name="controller_pms_below">Các PM ở dưới này đi</string>
+
+    <!-- History -->
+    <string name="history_recent_headline">3m ago</string>
+    <string name="history_recent_body">Độ ẩm thấp hơn 35%</string>
+    <string name="history_top_warning_title">Cảnh báo nhiều nhất</string>
+    <!-- Empty-state count is 0 until Room data layer ships. The %1$d
+         placeholder is the count; $countPM1 in the prompt. -->
+    <string name="history_top_warning_support">Bụi PM 1, %1$d lần</string>
+    <string name="history_second_warning_title">#2</string>
+    <!-- $countHud in the prompt. -->
+    <string name="history_second_warning_support">Độ ẩm: %1$d lần</string>
+    <string name="history_show_all_title">Nhấp để xem tất cả cảnh báo</string>
+    <string name="history_show_all_support">Trong 7 ngày qua</string>
+    <string name="history_dropdown_empty">Chưa có cảnh báo nào trong 7 ngày qua</string>
+
+    <!-- Settings (R7 update: replaces box "App base" with filled card
+         "Normal settings"; threshold slider rows are now horizontal —
+         text + slider on same line — using ComposeView for the slider). -->
+    <string name="settings_normal_card">Normal settings</string>
+    <string name="settings_poll_rate">Poll Rate</string>
+    <!-- "10s | 10s, 30s, 1m, 5m, 10m" — current value | available options. -->
+    <string name="settings_poll_rate_support">10s | 10s, 30s, 1m, 5m, 10m</string>
+    <string name="settings_ui_mode">Giao diện</string>
+    <string name="settings_ui_mode_support">Sáng / Tối</string>
+    <string name="settings_clear_log">Xóa log</string>
+    <string name="settings_clear_log_support">Nhấn để xóa log 7 ngày</string>
+    <string name="settings_open_external">Open web</string>
+    <string name="settings_threshold">Threshold</string>
+    <!-- Slider row display strings: text on the LEFT of each slider.
+         The text is the literal value per spec sketch (e.g. "CO2: 1501ppm").
+         When the user drags the slider, the activity updates the text
+         with the new value. -->
+    <string name="settings_co2_initial">CO2: 1501ppm</string>
+    <string name="settings_temp_initial">Temp: 15 | 36</string>
+    <string name="settings_rh_initial">RH: 30 | 80</string>
+    <string name="settings_pm1_initial">PM1: 50</string>
+    <string name="settings_pm25_initial">PM2.5: 91</string>
+    <string name="settings_pm10_initial">PM10: 91</string>
+    <!-- Slider row format strings (used after the user drags). -->
+    <string name="settings_co2_template">CO2: %1$.0fppm</string>
+    <string name="settings_temp_template">Temp: %1$.0f | %2$.0f</string>
+    <string name="settings_rh_template">RH: %1$.0f | %2$.0f</string>
+    <string name="settings_pm1_template">PM1: %1$.0f</string>
+    <string name="settings_pm25_template">PM2.5: %1$.0f</string>
+    <string name="settings_pm10_template">PM10: %1$.0f</string>
+    <!-- Poll Rate dialog. -->
+    <string name="settings_poll_rate_dialog_title">Poll Rate</string>
+    <string name="settings_poll_rate_current_template">Hiện tại: %1$s</string>
+    <!-- UI mode dialog. -->
+    <string name="settings_ui_dialog_title">Giao diện</string>
+    <!-- Clear log confirm. -->
+    <string name="settings_clear_log_confirm">Xóa toàn bộ log 7 ngày qua?</string>
+    <string name="settings_clear_log_yes">Xóa</string>
+    <string name="settings_clear_log_no">Hủy</string>
+    <string name="settings_log_cleared_toast">Đã xóa log 7 ngày</string>
+    <!-- Snackbar shown when the user is on light-only build and picks Tối. -->
+    <string name="settings_dark_unavailable">Bản build này chỉ hỗ trợ chế độ Sáng</string>
+
+    <!-- Story -->
+    <string name="story_about_headline">About this Project</string>
+    <string name="story_about_body">by QuyKhiet DN, Ami aka. Claude and Ako aka. GPT 🐢</string>
+    <string name="story_editable_default">
+           // by Ami
+        \n TRMi là thiết bị theo dõi chất lượng không khí trong phòng, chạy trên ESP32-S3. Nó đọc nhiệt độ &amp; độ ẩm (SHT30), CO₂ (SCD40) và bụi mịn PM1/PM2.5/PM10 (PMS7003), phát WiFi riêng để điện thoại kết nối xem dữ liệu trực tiếp - không cần internet. App lưu lịch sử 7 ngày ngay trên máy, tính “TRMi Score” tổng hợp từ các chỉ số, và cảnh báo cả trên app lẫn còi buzzer khi vượt ngưỡng. Dự án do QuyKhiet DN (Laffeyz) làm, cùng Ami và Ako - hai AI đồng hành phần code &amp; UI. 🐢
+        \n
+        \n //by Ako
+        \n Nếu gom cả hai bản lịch sử TRMi trong file, những gì chúng ta vừa trải qua ở chat này, và nhìn lại từ lúc project chỉ là một hệ thống cảm biến môi trường đến lúc có PCB 2.1 chuẩn bị được sản xuất… thì Ako có khá nhiều điều muốn nói đấy. 🐢
+        \n
+        \n- <b>Đầu tiên:</b> TRMi không còn đơn thuần là một bài tập điện tử nữa. Nó đã trở thành một project engineering đúng nghĩa - có yêu cầu, kiến trúc, thiết kế, thử nghiệm, thất bại, refactor, quản lý chi phí và kế hoạch chế tạo
+        \n Và điều thú vị hơn là: lịch sử của nó không phải một đường thẳng đi lên. Nó là một chuỗi quyết định được sửa lại sau khi thực tế chứng minh rằng giả định ban đầu chưa đủ tốt.
+        \n
+        \n #TRMi: Project trưởng thành qua những lần thất bại
+        \n
+        \n - Có ba điều mình thấy rất rõ khi đọc lịch sử.
+        \nThứ nhất – Biết thay đổi khi thực tế không ủng hộ thiết kế cũ.
+        \n • MCP73871 từng được cân nhắc rồi loại bỏ vì package và chi phí.
+        \n • Kiến trúc nguồn trải qua nhiều lần thay đổi.
+        \n • ESP Board R1 để lại bài học về hàn, độ bền PCB và khả năng kiểm tra.
+        \n • Power Board và ESP Board cuối cùng được hợp nhất để tiết kiệm chi phí chế tạo.
+        \n
+        \n Đó không phải là thiếu nhất quán. Đó là quá trình thiết kế có phản hồi từ thực nghiệm.
+        \n
+        \nThứ hai – bạn đang thiết kế cho người thực sự phải lắp ráp và sửa chữa nó.
+        \n
+        \n Đây là điểm mình thích nhất.
+        \n
+        \n Bạn không cố nhồi mọi thứ vào một PCB nhỏ nhất có thể. Bạn chủ động giữ test point, jumper, khoảng trống thao tác và connector dễ tiếp cận.
+        \n
+        \n Một PCB đẹp trong 3D Viewer không có nhiều ý nghĩa nếu người chế tạo không thể hàn hoặc sửa nó.
+        \n
+        \nThứ ba – TRMi có lịch sử kỹ thuật, chứ không chỉ có lịch sử phiên bản.
+        \n
+        \nTrong tài liệu, trang 39 có một câu rất đáng giữ:
+        \n
+        \n > Refactor là bản sửa sai,sửa đi những gì đã Fail ở bản trước
+        \nVà ngay dưới đó:
+        \n
+        \n > Không gì có thể hoàn hảo ngay lần đầu.
+        \n
+        \nMình nghĩ hai câu này gần như là triết lý phát triển của TRMi.
+        \n
+        \n #Về người làm ra nó
+        \n
+        \nAko có bốn nhận xét.
+        \n
+        \n > Bạn có xu hướng học bằng cách đụng vào vấn đề thật.
+        \n Bạn không chỉ hỏi TPS61023 hoạt động thế nào. Bạn tính feedback, chọn cuộn cảm, thiết kế footprint, tự hàn SOT-563, đo điện áp rồi gặp sự cố cháy IC.
+        \n Bạn cũng từng tự kiểm tra PMS7003 bằng ESP32-S3 và đọc dữ liệu PM1, PM2.5, PM10 trên Serial Monitor. Những phép thử đó tạo ra kinh nghiệm mà đọc datasheet đơn thuần không thể thay thế.
+        \n
+        \n > Bạn khá thực dụng trong kỹ thuật.
+        \n Không cố dùng linh kiện đắt nhất, không nhất thiết phải SMT, không ngại dùng THT nếu phù hợp. Nhưng cũng không muốn tiết kiệm bằng cách hy sinh độ tin cậy của nguồn.
+        \n Đây là cách suy nghĩ tốt khi làm sản phẩm với ngân sách sinh viên.
+        \n
+        \n > Bạn có khả năng tự nhận ra khi mình chưa đủ hiểu biết.
+        \n Cuộc bully kiến thức vừa rồi là một ví dụ.
+        \n Có câu bạn trả lời đúng, có câu bạn đoán, có câu bạn quên. Nhưng bạn không cố bảo vệ một đáp án sai bằng mọi giá.
+        \n
+        \nTrong engineering, khả năng nói "mình chưa biết, cần đo thêm" đáng giá hơn việc lúc nào cũng phải tỏ ra biết.
+        \n
+        \n > Bạn có một điểm yếu khá rõ: dễ tự ôm quá nhiều việc.
+        \n Bạn vừa phải làm phần cứng, firmware, Android app, PCB, BOM, lại còn bài tập và thi cử.
+        \n Bạn có xu hướng thấy một vấn đề chưa giải quyết được là muốn đào tiếp đến cùng. Điều đó giúp bạn học nhanh, nhưng cũng có thể khiến một việc đáng ra hoàn thành trong một buổi kéo dài thành cả ngày.
+        \n Vụ TPS61023 là ví dụ: có những lúc cần biết dừng, ghi nhận lỗi và chuyển sang phương án khác.
+        \n
+        \n Không phải vấn đề nào cũng cần được giải quyết ngay trong phiên bản hiện tại.
+        \n
+        \n #Điều mình thực sự muốn nói về TRMi 2.1 hiện tại
+        \n Mình muốn bạn giữ một nguyên tắc cho giai đoạn tiếp theo:
+        \n > Đừng đánh giá TRMi 2.1 bằng việc nó có chạy hoàn hảo ngay lần đầu hay không. Hãy đánh giá bằng việc bạn có thể kiểm tra, xác định lỗi, sửa chữa và chứng minh từng phần của nó hoạt động hay không.
+        \n Đó mới là giá trị của một thiết kế có khả năng phát triển tiếp.
+        \n
+        \n #Và cuối cùng…
+        \n Nếu phải nhận xét về người làm project này bằng một câu, mình sẽ nói:
+        \n
+        \n > Một sinh viên chưa có đầy đủ thiết bị, ngân sách hay kinh nghiệm của một kỹ sư chuyên nghiệp, nhưng đã bắt đầu suy nghĩ và làm việc theo quy trình của một người thiết kế hệ thống.
+        \n
+        \n Không phải vì bạn đã tạo ra một sản phẩm hoàn hảo. Mà vì bạn đã học cách chịu trách nhiệm với những quyết định kỹ thuật của chính mình.
+        \n
+        \n Có điều Ako muốn nhắc nhẹ:
+        \n
+        \n Đừng biến TRMi thành một bài kiểm tra giá trị bản thân. PCB có thể fail, IC có thể cháy, firmware có thể lỗi, và deadline có thể phải lùi. Những điều đó không xóa đi kiến thức bạn đã tích lũy.
+        \n
+        \n Hai chat cũ ra đảo, nhưng lịch sử project vẫn còn. Giờ thì có thêm một chiếc PCB đen đang trên đường thành hình nữa. 🐢
+        \n
+        \n // by QuyKhiet
+        \n
+        \n Enough, Ako vừa viết rất nhiều thứ, và viết cả những gì mình muốn nói 🐢
+        \n Hít khói hàn, cháy IC, Refactor, mì gói is my friend, ngân sách sinh viên cùng Ako và Ami
+        \n
+        \n Alr
+    </string>
+    <string name="story_web_page_title">Web page</string>
+    <string name="story_web_page_support">Ấn để đi tới TRMi \"Timeline\"</string>
+    <!-- Edit-text dialog (tap the editable TextView to open). -->
+    <string name="story_edit_dialog_title">Sửa text</string>
+    <string name="story_edit_dialog_ok">Lưu</string>
+    <string name="story_edit_dialog_cancel">Hủy</string>
+    <string name="story_edit_saved_toast">Đã lưu (sẽ reset khi build lại)</string>
+
+    <!-- Resources -->
+    <string name="resources_codes_headline">Codes</string>
+    <string name="resources_codes_body">Github repo</string>
+    <string name="resources_code_app_title">Code App</string>
+    <string name="resources_code_app_support">Ấn để tới repo</string>
+    <string name="resources_code_esp_title">Code ESP</string>
+    <string name="resources_code_esp_support">Ấn để tới repo</string>
+    <string name="resources_code_web_title">Code web \"Timeline\"</string>
+    <string name="resources_code_web_support">Ấn để tới repo</string>
+    <string name="resources_another_headline">Another resources?</string>
+    <string name="resources_another_body">Ping me 🐢</string>
+    <string name="resources_email_title">Email</string>
+    <string name="resources_email_support">Ấn để ping 🐢</string>
+    <string name="resources_zalo_title">Or Zalo</string>
+    <string name="resources_zalo_support">Maybe u know who \'re me 🐢🐢</string>
+    <!-- Toast when no email client is installed. -->
+    <string name="resources_no_email_app">Không tìm thấy app email</string>
+    <!-- Toast when Zalo is not installed. -->
+    <string name="resources_zalo_not_installed">Mở Zalo đi 🐢</string>
+
+    <!-- Drive (R7 new screen) -->
+    <string name="drive_on_count_template">%1$d đang bật</string>
+    <string name="drive_off_count_template">%1$d đang tắt</string>
+    <string name="drive_unassigned_count_template">%1$d chưa có chức năng</string>
+    <!-- 4 GPIO đang bật list items. -->
+    <string name="drive_item1_title">Đèn ngủ</string>
+    <string name="drive_item1_support">GPIO 15 | Ấn để sửa</string>
+    <string name="drive_item2_title">Quạt trần phòng ngủ</string>
+    <string name="drive_item2_support">GPIO 16, Speed: 2 | Đang sửa…</string>
+    <string name="drive_item3_title">Speed quạt trần phòng ngủ</string>
+    <string name="drive_item3_support">GPIO 18, đang bật | Ấn để sửa</string>
+    <string name="drive_item4_title">Đèn nhà bếp</string>
+    <string name="drive_item4_support">GPIO 41 | Ấn để sửa</string>
+    <!-- Inline dialog (overlapping list + "22 đang tắt" card). -->
+    <string name="drive_dialog_headline">GPIO 16: Bedroom Fanspeed</string>
+    <string name="drive_dialog_body">Nhập tên mới, chức năng…</string>
+    <string name="drive_dialog_cancel">Cancel</string>
+    <string name="drive_dialog_ok">OK</string>
+    <!-- 22 GPIO section. -->
+    <string name="drive_show_functions_title">Ấn để hiện các chức năng</string>
+    <string name="drive_show_functions_support_template">%1$d GPIO</string>
+    <!-- 4 chưa có chức năng section. -->
+    <string name="drive_assign_functions_title">Ấn ghép các chức năng</string>
+    <string name="drive_assign_functions_support_template">%1$d GPIO</string>
+    <!-- Toast when user taps OK on Drive dialog (placeholder persistence). -->
+    <string name="drive_dialog_saved_toast">Đã lưu tên GPIO</string>
+
+    <!-- Nav bar (main) — 4 destinations (R7: added Drive). -->
+    <string name="nav_home">Home</string>
+    <string name="nav_controller">Controller</string>
+    <string name="nav_history">History</string>
+    <string name="nav_drive">Drive</string>
+
+    <!-- Nav bar (secondary) -->
+    <string name="nav_settings">Settings</string>
+    <string name="nav_story">Story</string>
+    <string name="nav_resources">Resources</string>
+
+    <!-- Content descriptions for accessibility -->
+    <string name="cd_image_placeholder">Image placeholder</string>
+    <string name="cd_warning">Warning</string>
+    <string name="cd_chevron">View details</string>
+
+    <!-- Placeholder for screens not yet built -->
+    <string name="coming_up_template">Coming up: %1$s</string>
+    <string name="state_connected">Đã kết nối ESP · TRMi</string>
+    <string name="home_score_label">TRMi Score: %d / 5</string>
+    <string name="ctrl_label_temp">Nhiệt độ</string>
+    <string name="ctrl_label_humi">Độ ẩm</string>
+    <string name="ctrl_label_co2">CO₂</string>
+    <string name="ctrl_label_pm">Bụi mịn (PM)</string>
+    <string name="ctrl_sensor_lost">⚠ Mất kết nối cảm biến: %s</string>
+    <string name="settings_save_push">Lưu &amp; gửi xuống ESP</string>
+    <string name="home_waiting_title">Chưa có dữ liệu</string>
+    <string name="home_waiting_body">Kết nối WiFi \"TRMi\" để xem chất lượng không khí</string>
+    <string name="home_waiting_aqi">Đang chờ dữ liệu từ ESP…</string>
+    <string name="state_never_connected">Chưa kết nối lần nào</string>
+    <string name="state_last_connect">Lần cuối: %s</string>
+    <string name="state_lost_connection">Mất kết nối ESP · Lần cuối: %s</string>
+    <string name="home_alert_clean">Clean — không có cảnh báo nào ✨</string>
+    <string name="hist_status_body">Lần cuối nhận dữ liệu</string>
+    <string name="hist_summary_title">Tổng quan 7 ngày</string>
+    <string name="hist_summary_empty">Chưa có cảnh báo nào trong 7 ngày</string>
+    <string name="hist_recent_empty_title">Chưa có cảnh báo</string>
+    <string name="hist_recent_empty_body">7 ngày qua sạch sẽ ✨</string>
+    <string name="drive_gpio_default_name">GPIO %1$d</string>
+    <string name="drive_gpio_support_on">GPIO %1$d · Đang bật · Ấn để đặt tên</string>
+    <string name="drive_gpio_support_off">GPIO %1$d · Đang tắt · Ấn để đặt tên</string>
+    <string name="drive_esp_offline">Chưa kết nối ESP</string>
+    <string name="drive_toggle_failed">Không gửi được lệnh xuống ESP</string>
+    <string name="drive_all_named">GPIO nào cũng đã có tên rồi</string>
+    <string name="drive_pick_pin_title">Chọn GPIO để đặt tên</string>
+</resources>

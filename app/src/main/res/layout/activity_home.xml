@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- 1. Top app bar (64dp on surface, extends behind status bar via inset). -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_bar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/topbar_height"
+        android:background="?attr/colorSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="@string/topbar_home"
+        app:titleTextAppearance="@style/TextAppearance.S3.TitleLarge"
+        app:menu="@menu/menu_topbar_home" />
+
+    <!-- 7. Main nav bar pinned at the bottom. -->
+    <include
+        android:id="@+id/nav_bar_include"
+        layout="@layout/layout_nav_bar_main"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Body: scrollable so the layout survives small screens / font scale. -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toTopOf="@id/nav_bar_include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_margin"
+            android:paddingTop="@dimen/gap_small"
+            android:paddingBottom="@dimen/gap_large">
+
+            <!-- 2. Outlined status card (96dp). -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/status_card"
+                style="@style/Widget.S3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                app:cardBackgroundColor="?attr/colorSurface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/status_headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/timestamp_placeholder"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3" />
+
+                    <TextView
+                        android:id="@+id/status_body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/state_disconnected_template"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Outlined alert card (156dp) — image icon fills trailing side. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/alert_card"
+                style="@style/Widget.S3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurface">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/alert_headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_alert_headline"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/alert_body"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/alert_image"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/alert_body"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/home_alert_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4"
+                        app:layout_constraintTop_toBottomOf="@id/alert_headline"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/alert_image" />
+
+                    <ImageView
+                        android:id="@+id/alert_image"
+                        android:layout_width="120dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/cd_image_placeholder"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        android:padding="36dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Divider with 16dp horizontal insets. -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:layout_marginStart="@dimen/divider_horizontal_inset"
+                android:layout_marginEnd="@dimen/divider_horizontal_inset"
+                app:dividerColor="?attr/colorOutlineVariant" />
+
+            <!-- 5. Filled AQI card (176dp) — full-bleed image + dark scrim under top text. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/aqi_card"
+                style="@style/Widget.S3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="176dp"
+                android:layout_marginTop="@dimen/gap_medium"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
+                app:contentPadding="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- Full-bleed placeholder image background. -->
+                    <ImageView
+                        android:id="@+id/aqi_image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/cd_image_placeholder"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_image"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        android:alpha="0.35"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <!-- Dark scrim so light text reads on top. -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/scrim_dark"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/aqi_headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/home_aqi_headline"
+                        android:textAppearance="@style/TextAppearance.S3.TitleMedium"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/aqi_body"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="@dimen/card_text_gap"
+                        android:text="@string/home_aqi_body"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.4"
+                        app:layout_constraintTop_toBottomOf="@id/aqi_headline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 6. "Cảnh báo gần đây" list item (tap → History). -->
+            <LinearLayout
+                android:id="@+id/recent_alert"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/listitem_height"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/colorSurfaceContainerLow"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:paddingHorizontal="@dimen/gap_medium">
+
+                <FrameLayout
+                    android:layout_width="@dimen/listitem_icon_circle"
+                    android:layout_height="@dimen/listitem_icon_circle">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_icon_circle_error" />
+
+                    <ImageView
+                        android:layout_width="@dimen/listitem_icon_size"
+                        android:layout_height="@dimen/listitem_icon_size"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_warning" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/card_image_text_gap"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_recent_alert_title"
+                        android:textAppearance="@style/TextAppearance.S3.BodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:lineSpacingMultiplier="1.3" />
+
+                    <TextView
+                        android:id="@+id/recent_alert_support"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/home_recent_alert_support"
+                        android:textAppearance="@style/TextAppearance.S3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:lineSpacingMultiplier="1.4" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="@dimen/listitem_icon_size"
+                    android:layout_height="@dimen/listitem_icon_size"
+                    android:layout_marginStart="@dimen/gap_small"
+                    android:src="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/cd_chevron" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
